@@ -1,0 +1,42 @@
+<?php
+
+// php artisan make:model Post -m 
+
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreatePostsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('posts', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned()->index();
+            $table->integer('category_id')->unsigned()->index();
+            $table->integer('photo_id')->unsigned()->index();
+            $table->string('title');
+            $table->text('body');
+            $table->timestamps();
+            
+            // ::::: kad obrisemo nekog korisnika brisemo i njegove postove ::::: //
+            // posle ove linije koda mora i php artisan migrate:refresh, isto kao i za ove iznad
+            // zato je dobro odmah na pocetku dodati i ovo
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('posts');
+    }
+}
